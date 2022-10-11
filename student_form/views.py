@@ -2,7 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Studentdetail
 
-def new_page(request):
+def index(request):
+    return render(request,'index.html')
+
+def form(request):
     if request.method == "POST":
         sn = request.POST['sname']
         cl = request.POST['class']
@@ -15,6 +18,13 @@ def new_page(request):
     else:
         return HttpResponse('error')
 
+def form_list(request):
+    emps = Studentdetail.objects.all()
+    context = {
+        'emps':emps
+    }
+    print(context)
+    return render(request,'form_list.html',context)
 
     
 
