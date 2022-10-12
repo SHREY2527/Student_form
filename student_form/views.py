@@ -1,6 +1,7 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse,HttpResponseRedirect
+from django.shortcuts import redirect, render
 from .models import Studentdetail
+from .forms import studentform
 
 def index(request):
     return render(request,'index.html')
@@ -19,14 +20,28 @@ def form(request):
         return HttpResponse('error')
 
 def form_list(request):
-    emps = Studentdetail.objects.all()
+    stds = Studentdetail.objects.all()
     context = {
-        'emps':emps
+        'stds':stds
     }
-    print(context)
     return render(request,'form_list.html',context)
 
-    
+def student_delete(request,id):
+    if request.method == 'POST':
+        stds = Studentdetail.objects.get(pk=id)
+        stds.delete()
+        return HttpResponseRedirect('/form_list/')
+def edit_detail(request,id):
+        stds = Studentdetail.objects.get(id=id)
+        return render(request,'update.html',{'std':stds})
 
-    
-       
+def update_detail(request,id):
+        stup = Studentdetail.objects.get(id=id)         
+        form = studentform(request.POST,instance=stup)
+        if form.is_valid():
+            form.save()
+            return render(request,'update.html',{'std':stup})
+            
+
+
+
